@@ -6,16 +6,13 @@ const options = {
   key: fs.readFileSync('cert/private.key')
 };
 
+const https = require('https');
 const express = require('express');
 const path = require('path');
 const app = express();
 const port = process.env.PORT || 3000;
-const httpsPort = process.env.PORT || 3030;
+const server = https.createServer(options, app).listen(port);
 
 app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '/index.html'));
 });
-
-app.listen(port);
-httpsPort.createServer(options, app).listen(httpsPort);
-//console.log('Server started at http://localhost:' + port);
