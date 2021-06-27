@@ -1,3 +1,5 @@
+//Old attempt, just saving for austerity
+
 const fs = require('fs');
 
 const options = {
@@ -13,6 +15,13 @@ const port = process.env.PORT || 3000;
 const https = require('https');
 const server = https.createServer(options, app).listen(port, () => {
   console.log('listening on *:3000');
+});
+
+app.use(function(req, res, next) {
+  if(!req.secure) {
+    return res.redirect(['https://', req.get('Host'), req.url].join(''));
+  }
+  next();
 });
 
 app.get('/', function(req, res) {
