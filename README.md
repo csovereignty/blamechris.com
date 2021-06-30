@@ -1,2 +1,2 @@
 # blamechris.com
-This is a collection of the html files for my website as I need somewhere to keep backups and manage edits!
+A profile/resume website project built using Node.js and Express to help me get familiar with both. Using a pretty solid template from w3schools for the CSS, will need to update with custom CSS at some point in the future!

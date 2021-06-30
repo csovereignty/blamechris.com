@@ -1,21 +1,36 @@
 const fs = require('fs');
-
+//putting SSL certs togethr
 const options = {
-  cert: fs.readFileSync('cert/certificate.crt'),
-  ca: fs.readFileSync('cert/ca_bundle.crt'),
-  key: fs.readFileSync('cert/private.key')
+  cert: fs.readFileSync('certs/certificate.crt'),
+  ca: fs.readFileSync('certs/ca_bundle.crt'),
+  key: fs.readFileSync('certs/private.key')
 };
 
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = process.env.PORT || 3000;
-const httpsPort = process.env.PORT || 3030;
+//HTTPS port, not worth the hassle changing
+const port = process.env.PORT || 443;
+const https = require('https');
+//Creating server and listening to connections on port 443
+const server = https.createServer(options, app).listen(port, () => {
+  console.log('listening on *:443');
+});
 
-app.get('/', function(req, res) {
+const http = require('http');
+const httpApp = express();
+const httpPort = process.env.PORT || 80;
+//Creating another server this one for HTTP on port 80
+const httpServer = http.createServer(httpApp).listen(httpPort, () => {
+  console.log('listening on *:80');
+});
+
+//Delivering html page to HTTP connections
+httpApp.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, '/index.html'));
 });
 
-app.listen(port);
-httpsPort.createServer(options, app).listen(httpsPort);
-//console.log('Server started at http://localhost:' + port);
+//Delivering html page to HTTPS connections
+app.get('/', function(req, res) {
+  res.sendFile(path.join(__dirname, '/index.html'));
+});
